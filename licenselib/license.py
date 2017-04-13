@@ -34,9 +34,9 @@ class ContractSoftware(Enum):
 
 @unique
 class Features(Enum):
-    dedup = 1
-    jails = 2
-    fibrechannel = 3
+    dedup = 0x0001
+    jails = 0x0002
+    fibrechannel = 0x0004
 
 
 license_v1_struct = Struct(
