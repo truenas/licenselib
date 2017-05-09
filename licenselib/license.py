@@ -37,6 +37,7 @@ class Features(Enum):
     dedup = 0x0001
     jails = 0x0002
     fibrechannel = 0x0004
+    vm = 0x0008
 
 
 license_v1_struct = Struct(
