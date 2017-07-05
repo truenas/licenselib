@@ -87,6 +87,7 @@ class License(LicenseBase):
         unpack[1] = unpack[1].decode('ascii').strip('\x00')
         unpack[2] = unpack[2].decode('ascii').strip('\x00')
         unpack[3] = unpack[3].decode('ascii').strip('\x00')
+        unpack[9] = unpack[9].decode('ascii').strip('\x00')
 
         unpack[7] = datetime.strptime(
             unpack[7].decode('ascii'), '%Y%m%d'
@@ -140,7 +141,7 @@ class License(LicenseBase):
 
 
 if __name__ == '__main__':
-    dump = License(version=1, model='Z50', system_serial='A1-3333333333333', system_serial_ha='', duration=300, features=[Features.dedup], contract_type=ContractType.bronze, contract_hardware=ContractHardware.parts, contract_software=ContractSoftware.none, contract_start=datetime.today().date(), customer_name='', customer_key='', addhw=[(5, 1)]).dump()
+    dump = License(version=1, model='Z50', system_serial='A1-3333333333333', system_serial_ha='', duration=300, features=[Features.dedup], contract_type=ContractType.bronze, contract_hardware=ContractHardware.parts, contract_software=ContractSoftware.none, contract_start=datetime.today().date(), customer_name='iXsystems', customer_key='', addhw=[(5, 1)]).dump()
     with open('license.key', 'wb+') as f:
         f.write(dump)
         print(License.load(dump))
