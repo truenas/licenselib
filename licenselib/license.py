@@ -4,7 +4,6 @@ from enum import Enum, unique
 from struct import Struct
 
 import base64
-import six
 
 
 @unique
@@ -87,7 +86,19 @@ class License(LicenseBase):
         unpack[1] = unpack[1].decode('ascii').strip('\x00')
         unpack[2] = unpack[2].decode('ascii').strip('\x00')
         unpack[3] = unpack[3].decode('ascii').strip('\x00')
+
+        for i, enumclass in (
+            (4, ContractType),
+            (5, ContractHardware),
+            (6, ContractSoftware),
+        ):
+            for member in enumclass.__members__.values():
+                if unpack[i] == member.value:
+                    unpack[i] = member
+                    break
+
         unpack[9] = unpack[9].decode('ascii').strip('\x00')
+        unpack[10] = unpack[10].decode('ascii').strip('\x00')
 
         unpack[7] = datetime.strptime(
             unpack[7].decode('ascii'), '%Y%m%d'
@@ -99,18 +110,34 @@ class License(LicenseBase):
                 features.append(f)
         unpack[11] = features
 
-
         # Unpack remainder of the data related to the additional hardware
         addhw = []
         hwremainder = data[license_v1_struct.size:]
         for step in range(unpack[-1]):
             addhw.append(
-                license_v1_addhw.unpack(hwremainder[step*2:(step + 1) * 2])
+                license_v1_addhw.unpack(hwremainder[step * 2:(step + 1) * 2])
             )
 
         unpack[-1] = addhw
 
         return cls._make(unpack)
+
+    def __encode__(self):
+        return {
+            'version': self.version,
+            'model': self.model,
+            'system_serial': self.system_serial,
+            'system_serial_ha': self.system_serial_ha,
+            'contract_type': self.contract_type.name.upper(),
+            'contract_hardware': self.contract_hardware.name.upper(),
+            'contract_software': self.contract_software.name.upper(),
+            'contract_start': self.contract_start.strftime("%Y%m%d"),
+            'duration': self.duration,
+            'customer_name': self.customer_name.upper(),
+            'customer_key': self.customer_key.upper(),
+            'features': [f.name.upper() for f in self.features],
+            'addhw': self.addhw,
+        }
 
     def dump(self):
         features = 0
@@ -119,16 +146,16 @@ class License(LicenseBase):
 
         pack = license_v1_struct.pack(
             self.version,
-            six.b(self.model),
-            six.b(self.system_serial),
-            six.b(self.system_serial_ha),
+            self.model.encode(),
+            self.system_serial.encode(),
+            self.system_serial_ha.encode(),
             self.contract_type.value,
             self.contract_hardware.value,
             self.contract_software.value,
-            six.b(self.contract_start.strftime("%Y%m%d")),
+            self.contract_start.strftime("%Y%m%d").encode(),
             self.duration,
-            six.b(self.customer_name),
-            six.b(self.customer_key),
+            self.customer_name.encode(),
+            self.customer_key.encode(),
             features,
             len(self.addhw),
         )
@@ -141,7 +168,10 @@ class License(LicenseBase):
 
 
 if __name__ == '__main__':
-    dump = License(version=1, model='Z50', system_serial='A1-3333333333333', system_serial_ha='', duration=300, features=[Features.dedup], contract_type=ContractType.bronze, contract_hardware=ContractHardware.parts, contract_software=ContractSoftware.none, contract_start=datetime.today().date(), customer_name='iXsystems', customer_key='', addhw=[(5, 1)]).dump()
+    license = License(version=1, model='Z50', system_serial='A1-3333333333333', system_serial_ha='', duration=300, features=[Features.dedup], contract_type=ContractType.bronze, contract_hardware=ContractHardware.parts, contract_software=ContractSoftware.none, contract_start=datetime.today().date(), customer_name='iXsystems', customer_key='', addhw=[(5, 1)])
+    dump = license.dump()
+    print(license.__encode__())
     with open('license.key', 'wb+') as f:
         f.write(dump)
         print(License.load(dump))
+        print(License.load(dump).dump())
