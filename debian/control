@@ -1,0 +1,18 @@
+Source: licenselib
+Section: python
+Priority: optional
+Maintainer: William Grzybowski <william@grzy.org>
+Build-Depends: debhelper-compat (= 12), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.4.0
+Homepage: https://github.com/freenas/licenselib
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-licenselib
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: License module for TrueNAS
+ Open source version of license for TrueNAS, version 1.
+ This is not intended to be secure as customers need to
+ contact iXsystems and the hash of the license is verified.
+ .
+ This package installs the library for Python 3.

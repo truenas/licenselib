@@ -1,0 +1,5 @@
+licenselib (1.0-1) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- William Grzybowski <william@grzy.org>  Wed, 14 Aug 2019 13:56:13 -0300
