@@ -83,9 +83,9 @@ class License(LicenseBase):
 
         unpack = list(license_v1_struct.unpack(data[:license_v1_struct.size]))
 
-        unpack[1] = unpack[1].decode('ascii').strip('\x00')
-        unpack[2] = unpack[2].decode('ascii').strip('\x00')
-        unpack[3] = unpack[3].decode('ascii').strip('\x00')
+        unpack[1] = unpack[1].decode('utf-8').strip('\x00')
+        unpack[2] = unpack[2].decode('utf-8').strip('\x00')
+        unpack[3] = unpack[3].decode('utf-8').strip('\x00')
 
         for i, enumclass in (
             (4, ContractType),
@@ -97,8 +97,8 @@ class License(LicenseBase):
                     unpack[i] = member
                     break
 
-        unpack[9] = unpack[9].decode('ascii').strip('\x00')
-        unpack[10] = unpack[10].decode('ascii').strip('\x00')
+        unpack[9] = unpack[9].decode('utf-8').strip('\x00')
+        unpack[10] = unpack[10].decode('utf-8').strip('\x00')
 
         unpack[7] = datetime.strptime(
             unpack[7].decode('ascii'), '%Y%m%d'
@@ -146,16 +146,16 @@ class License(LicenseBase):
 
         pack = license_v1_struct.pack(
             self.version,
-            self.model.encode(),
-            self.system_serial.encode(),
-            self.system_serial_ha.encode(),
+            self.model.encode('utf-8'),
+            self.system_serial.encode('utf-8'),
+            self.system_serial_ha.encode('utf-8'),
             self.contract_type.value,
             self.contract_hardware.value,
             self.contract_software.value,
             self.contract_start.strftime("%Y%m%d").encode(),
             self.duration,
-            self.customer_name.encode(),
-            self.customer_key.encode(),
+            self.customer_name.encode('utf-8'),
+            self.customer_key.encode('utf-8'),
             features,
             len(self.addhw),
         )
