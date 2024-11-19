@@ -1,4 +1,4 @@
-__all__ = ('proactive_allowed')
+__all__ = ('proactive_support_allowed')
 
 from license import ContractType
 
