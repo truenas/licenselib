@@ -1,6 +1,6 @@
 __all__ = ('proactive_support_allowed')
 
-from license import ContractType
+from .license import ContractType
 
 
 def proactive_support_allowed(ctype: str) -> bool:
