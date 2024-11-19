@@ -15,6 +15,7 @@ class ContractType(Enum):
     gold = 4
     freenascertified = 5
     freenasmini = 6
+    silverinternational = 7
 
 
 @unique
